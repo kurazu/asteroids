@@ -24,6 +24,29 @@ suite.addBatch
 			assert.equal vector.x, 2
 			assert.equal vector.y, 3
 		'has angle': (vector) ->
-			assert.equal vector.angle, 0.982793723247329
+			assert.equal vector.angle, Math.atan 3 / 2
+	'vector length':
+		topic: new vector2d.Vector 3, 4
+		'has length 5': (vector) ->
+			assert.equal vector.length, 5
+	'scaled vector':
+		topic: () ->
+			vector = new vector2d.Vector 3, 4
+			vector.scaled 2
+		'has correct length': (vector) ->
+			assert.equal vector.x, 6
+			assert.equal vector.y, 8
+			assert.equal vector.length, 10
+		'has correct angle': (vector) ->
+			assert.equal vector.angle, Math.atan 4 / 3
+	'scaling vector':
+		topic: new vector2d.Vector(3, 4).scale(3)
+		'has correct length': (vector) ->
+			assert.equal vector.x, 9
+			assert.equal vector.y, 12
+			assert.equal vector.length, 15
+		'has correct angle': (vector) ->
+			assert.equal vector.angle, Math.atan 4 / 3
+
 
 suite.run()
