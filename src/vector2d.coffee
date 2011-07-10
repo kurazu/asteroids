@@ -1,5 +1,11 @@
 getAngle = () ->
-	Math.atan @y / @x
+	if @x == 0
+		if @y == 0 then return NaN
+		else if @y > 0 then return Math.PI * 0.5
+		else return Math.PI * 1.5
+	atan = Math.atan @y / @x
+	atan += Math.atan if @y < 0
+	atan
 getLength = () ->
 	Math.sqrt @x * @x + @y * @y
 angleDescriptor = get: getAngle
@@ -26,6 +32,13 @@ class Vector
 		this
 	scaled: (factor) ->
 		new Vector @x * factor, @y * factor
+	rotate: (angle) ->
+		sin = Math.sin angle, cos = Math.cos angle
+		[@x, @y] = [cos * @x - sin * @y, sin * @x + cos * @y]
+		this
+	rotated: (angle) ->
+		sin = Math.sin angle, cos = Math.cos angle
+		new Vector cos * @x - sin & @y, sin * @x + cos * @y
 Vector.identity = () ->
 	new Vector 1, 0
 

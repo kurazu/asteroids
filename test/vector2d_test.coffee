@@ -2,6 +2,10 @@ vows = require 'vows'
 assert = require 'assert'
 vector2d = require('../src/vector2d').vector2d
 
+assert_floatEqual = (a, b, msg, epsilon=1e-10) ->
+	distance = Math.abs a - b
+	assert.equal a, b, msg if distance > epsilon
+
 suite = vows.describe '2D vectors tests'
 suite.addBatch
 	'vector construction with no params':
@@ -128,5 +132,32 @@ suite.addBatch
 		'has correct angle': ([vector, substracted]) ->
 			assert.equal vector.angle, Math.atan 4 / 3
 			assert.equal substracted.angle, Math.atan 3
+	'rotate':
+		topic: vector2d.Vector.identity()
+		'roundabout': (vector) ->
+			assert.equal vector.angle, 0
+
+			vector.rotate Math.PI * 0.5
+			assert_floatEqual vector.angle, Math.PI * 0.5
+			assert_floatEqual vector.x, 0
+			assert_floatEqual vector.y, 1
+			
+			vector.rotate Math.PI * 0.5
+			assert_floatEqual vector.angle, Math.PI
+			assert_floatEqual vector.x, -1
+			assert_floatEqual vector.y, 0
+
+			vector.rotate Math.PI * 0.5
+			assert_floatEqual vector.angle, Math.PI * 1.5
+			assert_floatEqual vector.x, 0
+			assert_floatEqual vector.y, -1
+
+			vector.rotate Math.PI * 0.5
+			assert_floatEqual vector.angle, 0
+			assert_floatEqual vector.x, 1
+			assert_floatEqual vector.y, 0
+
+
+
 
 suite.run()
