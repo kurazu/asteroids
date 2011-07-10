@@ -94,7 +94,20 @@ suite.addBatch
 		'has correct angle': ([vector, added]) ->
 			assert.equal vector.angle, Math.atan 4 / 3
 			assert.equal added.angle, Math.atan 3 / 2
-
-
+	'substract':
+		topic: () ->
+			vector = new vector2d.Vector 3, 4
+			operand = new vector2d.Vector 1, 2
+			substract = vector.substract operand
+			[vector, substract]
+		'is the same object': ([vector, substract]) ->
+			assert.strictEqual vector, substract
+		'has correct props': ([vector, substract]) ->
+			assert.equal vector.x, 2
+			assert.equal vector.y, 2
+		'has correct length': ([vector, substract]) ->
+			assert.equal vector.length, 2 * Math.sqrt 2
+		'has correct angle': ([vector, substract]) ->
+			assert.equal vector.angle, Math.PI / 4
 
 suite.run()
