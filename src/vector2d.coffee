@@ -1,11 +1,5 @@
 getAngle = () ->
-	if @x == 0
-		if @y == 0 then return NaN
-		else if @y > 0 then return Math.PI * 0.5
-		else return Math.PI * 1.5
-	atan = Math.atan @y / @x
-	atan += Math.atan if @y < 0
-	atan
+	if @y >= 0 then Math.atan2 @y, @x else Math.PI + Math.atan2 -@y, -@x
 getLength = () ->
 	Math.sqrt @x * @x + @y * @y
 angleDescriptor = get: getAngle

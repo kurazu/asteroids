@@ -14,7 +14,33 @@ suite.addBatch
 			assert.equal vector.x, 0
 			assert.equal vector.y, 0
 		'has angle': (vector) ->
-			assert.isNaN vector.angle
+			assert.equal vector.angle, 0
+	'angle calculation':
+		topic: undefined
+		'0': () ->
+			vector = new vector2d.Vector 1, 0
+			assert_floatEqual vector.angle, 0
+		'0.25 * PI': () ->
+			vector = new vector2d.Vector 1, 1
+			assert_floatEqual vector.angle, Math.PI * 0.25
+		'0.5 * PI': () ->
+			vector = new vector2d.Vector 0, 1
+			assert_floatEqual vector.angle, Math.PI * 0.5
+		'0.75 * PI': () ->
+			vector = new vector2d.Vector -1, 1
+			assert_floatEqual vector.angle, Math.PI * 0.75
+		'PI': () ->
+			vector = new vector2d.Vector -1, 0
+			assert_floatEqual vector.angle, Math.PI
+		'1.25 * PI': () ->
+			vector = new vector2d.Vector -1, -1
+			assert_floatEqual vector.angle, Math.PI * 1.25
+		'1.5 * PI': () ->
+			vector = new vector2d.Vector 0, -1
+			assert_floatEqual vector.angle, Math.PI * 1.5
+		'1.75 * PI': () ->
+			vector = new vector2d.Vector 1, -1
+			assert_floatEqual vector.angle, Math.PI * 1.75
 	'identity vector construction':
 		topic: new vector2d.Vector.identity()
 		'has x 1 and y 0': (vector) ->
@@ -153,7 +179,7 @@ suite.addBatch
 			assert_floatEqual vector.y, -1
 
 			vector.rotate Math.PI * 0.5
-			assert_floatEqual vector.angle, 0
+			assert_floatEqual vector.angle, Math.PU * 2
 			assert_floatEqual vector.x, 1
 			assert_floatEqual vector.y, 0
 
