@@ -40,6 +40,5 @@ class Vector
 Vector.identity = () ->
 	new Vector 1, 0
 
-global = exports || window
-global.vector2d =
+@vector2d =
 	Vector: Vector
