@@ -1,0 +1,6 @@
+.project
+.settings
+*~
+*.swp
+src/vector2d.js
+test/vector2d_test.js
