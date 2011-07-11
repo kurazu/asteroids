@@ -182,8 +182,19 @@ suite.addBatch
 			assert_floatEqual vector.angle, Math.PU * 2
 			assert_floatEqual vector.x, 1
 			assert_floatEqual vector.y, 0
-
-
-
-
+	'distance':
+		topic: () ->
+			v1 = new vector2d.Vector 1, 1
+			v2 = new vector2d.Vector 4, 1
+			v3 = new vector2d.Vector 4, 5
+			[v1, v2, v3]
+		'v1 -> v2': ([v1, v2, v3]) ->
+			assert.equal v1.distance(v2), 3
+			assert.equal v2.distance(v1), 3
+		'v2 -> v3': ([v1, v2, v3]) ->
+			assert.equal v2.distance(v3), 4
+			assert.equal v3.distance(v2), 4
+		'v1 - > v3': ([v1, v2, v3]) ->
+			assert.equal v1.distance(v3), 5
+			assert.equal v3.distance(v1), 5
 suite.run()
