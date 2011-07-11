@@ -4,4 +4,5 @@
 *.swp
 src/vector2d.js
 src/game.js
+src/view.js
 test/vector2d_test.js
