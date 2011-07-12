@@ -34,6 +34,7 @@ class Game
 				window.setTimeout onFrame, 16
 	gameInit: () ->
 		@shapes.push new asteroids.controller.Rocket()
+		@shapes.push new asteroids.controller.Asteroid() for i in [0..5]
 	move: (timediff) ->
 		shape.move timediff for shape in @shapes
 	onFrame: () ->
@@ -41,7 +42,7 @@ class Game
 		timediff = time - @prevtime
 		@frames++
 		if time - @time > 1000
-			console.log "FPS #{@frames}"
+			#console.log "FPS #{@frames}"
 			@time = time
 			@frames = 0
 		@move timediff

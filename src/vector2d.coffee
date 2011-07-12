@@ -37,6 +37,8 @@ class Vector
 		dx = other.x - @x
 		dy = other.y - @y
 		Math.sqrt dx * dx + dy * dy
+	toString: () ->
+		"<Vector #{@x},#{@y}>"
 Vector.identity = () ->
 	new Vector 1, 0
 

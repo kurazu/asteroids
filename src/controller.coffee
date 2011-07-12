@@ -31,4 +31,24 @@ class Rocket extends Shape
 		@model = new asteroids.model.Shape 250, 250, 0, 0, Math.PI / 4
 		super()
 
+rand = (from, to) ->
+	Math.random() * (to - from) + from
+
+randVertices = (number) ->
+	degStep = Math.PI * 2 / number
+	result = [vector2d.Vector.identity()]
+	for i in [1..number]
+		result.push vector2d.Vector.identity().scale(rand 0.2, 2).rotate(degStep * i)
+
+	result
+
+class Asteroid extends Shape
+	style: 'red'
+	constructor: () ->
+		@model = new asteroids.model.Shape rand(0, 500), rand(0, 500), 0, 0, rand(Math.PI / 8, Math.PI * 2)
+		@scale = rand 5, 30
+		@vertices = randVertices 8
+		super()
+
 asteroids.controller.Rocket = Rocket
+asteroids.controller.Asteroid = Asteroid
