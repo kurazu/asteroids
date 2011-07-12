@@ -26,7 +26,7 @@ Drawer = (vertices, strokeStyle='white') ->
 		angle = model.getViewAngle()
 		ctx.save()
 		ctx.translate position.x, position.y
-		ctx.rotate angle
+		ctx.rotate -angle
 		ctx.beginPath()
 		ctx.strokeStyle = strokeStyle
 		i = 0

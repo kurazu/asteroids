@@ -18,13 +18,17 @@ class Shape
 		@drawer = asteroids.view.Drawer @vertices, @style
 	draw: (ctx) ->
 		@drawer ctx, @model
+	move: (timediff) ->
+		scale = timediff / 1000
+		@model.rotationAngle += scale * @model.rotation
+		@model.position.add vector2d.Vector.identity().scale(scale * @model.velocity).rotate(@model.angle)
 
 class Rocket extends Shape
 	vertices: ROCKET_VERTICES
 	scale: 5.0
 	style: 'green'
 	constructor: () ->
-		@model = new asteroids.model.Shape 250, 250
+		@model = new asteroids.model.Shape 250, 250, 0, 0, Math.PI / 4
 		super()
 
 asteroids.controller.Rocket = Rocket
