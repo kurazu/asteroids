@@ -10,10 +10,12 @@ class Game
 		@view = new asteroids.view.Space()
 		@frames = 0
 		@time = getTime()
+		@shapes = []
 	run: () ->
 		console.log 'run'
 		@determineFrameMethod()
 		@view.init()
+		@gameInit()
 		# start loop
 		@requestFrame()
 	determineFrameMethod: () ->
@@ -30,6 +32,8 @@ class Game
 			console.log "Will use setTimeout"
 			@requestFrame = () ->
 				window.setTimeout onFrame, 16
+	gameInit: () ->
+		@shapes.push new asteroids.controller.Rocket()
 	onFrame: () ->
 		time = getTime()
 		@frames++
@@ -37,6 +41,7 @@ class Game
 			console.log "FPS #{@frames}"
 			@time = time
 			@frames = 0
+		@view.draw @shapes
 		@requestFrame()
 		
 asteroids.controller.Game = Game
