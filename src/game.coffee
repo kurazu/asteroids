@@ -4,6 +4,15 @@ asteroids.controller = {} if not asteroids.controller
 
 getTime = () ->
 	new Date().getTime()
+              
+is_bullet = (shape) ->
+	shape instanceof asteroids.controller.Bullet
+
+is_asteroid = (shape) ->
+	shape instanceof asteroids.controller.Asteroid
+
+is_rocket = (shape) ->
+	shape instanceof asteroids.controller.Rocket
 
 class Game
 	constructor: () ->
@@ -44,21 +53,33 @@ class Game
 	move: (timediff) ->
 		for shape in @shapes
 			shape.move timediff
-			@fixPostion shape
-	fixPostion: (shape) ->
+			@fixPosition shape
+		# collision detection
+		for i in [0...@shapes.length]
+			shape1 = @shapes[i]
+			for j in [i...@shapes.length]
+				shape2 = @shapes[j]
+				if shape1.model.position.distance(shape2.model.position) < shape1.model.bb_radius + shape2.model.bb_radius
+					@onCollision shape1, shape2
+		@shapes = (shape for shape in @shapes when not shape.delete)
+	onCollision: (shape1, shape2) ->
+		if (is_bullet(shape1) and is_asteroid(shape2)) or (is_asteroid(shape1) and is_bullet(shape2))
+			shape1.delete = true
+			shape2.delete = true
+	fixPosition: (shape) ->
 		pos = shape.model.position
-		is_bullet = shape instanceof asteroids.controller.Bullet
+		bullet = is_bullet(shape)
 		if pos.x < -Game.FIX_POSITION_MARGIN
-			return @removeShape shape if is_bullet
+			return @removeShape shape if bullet
 			pos.x = 500 + Game.FIX_POSITION_MARGIN
 		else if pos.x > 500 + Game.FIX_POSITION_MARGIN
-			return @removeShape shape if is_bullet
+			return @removeShape shape if bullet
 			pos.x = -Game.FIX_POSITION_MARGIN
 		if pos.y < -Game.FIX_POSITION_MARGIN
-			return @removeShape shape if is_bullet
+			return @removeShape shape if bullet
 			pos.y = 500 + Game.FIX_POSITION_MARGIN
 		else if pos.y > 500 + Game.FIX_POSITION_MARGIN
-			return @removeShape shape if is_bullet
+			return @removeShape shape if bullet
 			pos.y = Game.FIX_POSITION_MARGIN
 	onFrame: () ->
 		time = getTime()
