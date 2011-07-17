@@ -35,7 +35,7 @@ class Rocket extends Shape
 	max_velocity: 500
 	acceleration: 400
 	deceleration: 600
-	steering: Math.PI * 2
+	steering: Math.PI * 3
 	constructor: () ->
 		@model = new asteroids.model.Shape 250, 250, 0, 0, 0
 		super()
@@ -55,10 +55,8 @@ class Rocket extends Shape
 		@model.velocity = 0 if @model.velocity < 0
 	onLeft: with_scale (scale) ->
 		@model.angle += @steering * scale
-		console.log 'left', @model.angle
 	onRight: with_scale (scale) ->
 		@model.angle -= @steering * scale
-		console.log 'right', @model.angle
 	onFire: (time) ->
 		console.log 'fire'
 	move: (timediff) ->

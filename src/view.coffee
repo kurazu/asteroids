@@ -25,16 +25,16 @@ Drawer = (vertices, strokeStyle='white') ->
 		position = model.position
 		angle = model.getViewAngle()
 		ctx.save()
-		ctx.translate position.x, position.y
+		ctx.translate position.x, 500 - position.y
 		ctx.rotate -angle
 		ctx.beginPath()
 		ctx.strokeStyle = strokeStyle
 		i = 0
 		for vertice in vertices
 			if not i++
-				ctx.moveTo vertice.x, vertice.y
+				ctx.moveTo vertice.x, -vertice.y
 			else
-				ctx.lineTo vertice.x, vertice.y
+				ctx.lineTo vertice.x, -vertice.y
 		ctx.closePath()
 		ctx.stroke()
 		ctx.restore()
