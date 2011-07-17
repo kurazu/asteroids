@@ -20,6 +20,7 @@ class Game
 		@frames = 0
 		@prevtime = @time = getTime()
 		@shapes = []
+		@end = false
 	run: () ->
 		console.log 'run'
 		@determineFrameMethod()
@@ -66,6 +67,10 @@ class Game
 		if (is_bullet(shape1) and is_asteroid(shape2)) or (is_asteroid(shape1) and is_bullet(shape2))
 			shape1.delete = true
 			shape2.delete = true
+			return
+		if (is_asteroid(shape1) and is_rocket(shape2)) or (is_rocket(shape1) and is_asteroid(shape2))
+			@end = true
+			return
 	fixPosition: (shape) ->
 		pos = shape.model.position
 		bullet = is_bullet(shape)
@@ -92,7 +97,7 @@ class Game
 		@move timediff
 		@prevtime = time
 		@view.draw @shapes
-		@requestFrame()
+		@requestFrame() if not @end
 Game.FIX_POSITION_MARGIN = 20
 		
 asteroids.controller.Game = Game
