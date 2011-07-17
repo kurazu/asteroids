@@ -38,7 +38,7 @@ class Shape
 	move: (timediff) ->
 		scale = timediff / 1000
 		@model.rotationAngle += scale * @model.rotation
-		@model.position.add vector2d.Vector.identity().scale(scale * @model.velocity).rotate(@model.angle)
+		@model.position.add @model.velocity_vector.scaled scale
 
 class Bullet extends Shape
 	vertices: BULLET_VERTICES
@@ -50,14 +50,13 @@ class Bullet extends Shape
 		super()
 
 class Rocket extends Shape
-	visual_trails: 10
+	visual_trails: 5
 	vertices: ROCKET_VERTICES
 	scale: 5.0
 	style: 'green'
 	max_velocity: 300
 	acceleration: 400
-	deceleration: 600
-	steering: Math.PI * 3
+	steering: Math.PI * 2
 	shoot_timeout: 400
 	constructor: () ->
 		@model = new asteroids.model.Shape 250, 250, 0, 0, 0
@@ -65,18 +64,17 @@ class Rocket extends Shape
 		Keyboard = asteroids.keyboard.Keyboard
 		@keyboard = new Keyboard()
 		@keyboard.addListener Keyboard.UP, @onAccelerate.bind this
-		@keyboard.addListener Keyboard.DOWN, @onBrake.bind this
+		#@keyboard.addListener Keyboard.DOWN, @onBrake.bind this
 		@keyboard.addListener Keyboard.LEFT, @onLeft.bind this
 		@keyboard.addListener Keyboard.RIGHT, @onRight.bind this
 		@keyboard.addListener Keyboard.FIRE, @onFire.bind this
 		@keyboard.bind()
 		@can_shoot = true
 	onAccelerate: with_scale (scale) ->
-		@model.velocity += @acceleration * scale
-		@model.velocity = @max_velocity if @model.velocity > @max_velocity
-	onBrake: with_scale (scale) ->
-		@model.velocity -= @deceleration * scale
-		@model.velocity = 0 if @model.velocity < 0
+		force_vector = vector2d.Vector.identity().rotate(@model.angle).scale(scale * @acceleration)
+		@model.velocity_vector.add force_vector
+		length = @model.velocity_vector.length
+		@model.velocity_vector.scale @max_velocity / length if length > @max_velocity
 	onLeft: with_scale (scale) ->
 		@model.angle += @steering * scale
 	onRight: with_scale (scale) ->
