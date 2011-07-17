@@ -36,6 +36,10 @@ Drawer = (vertices, strokeStyle='white', after=1) ->
 			ctx.beginPath()
 			ctx.strokeStyle = strokeStyle
 			ctx.globalAlpha = (j + 1) / after
+			ctx.arc 0, 0, model.bb_radius, 0, Math.PI * 2, false
+			ctx.closePath()
+			ctx.stroke()
+			ctx.beginPath()
 			i = 0
 			for vertice in vertices
 				if not i++

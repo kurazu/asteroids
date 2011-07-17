@@ -28,8 +28,16 @@ with_scale = (func) ->
 class Shape
 	visual_trails: 1
 	constructor: () ->
-		@vertices = (vertice.scaled @scale for vertice in @vertices)
+		@vertices = (vertex.scaled @scale for vertex in @vertices)
+		@initBB()
 		@drawer = asteroids.view.Drawer @vertices, @style, @visual_trails
+	initBB: () ->
+		@model.bb_radius = 0
+		center = new vector2d.Vector 0, 0
+		for vertex in @vertices
+			len = center.distance vertex
+			@model.bb_radius = len if len > @model.bb_radius
+		undefined
 	bind: (addShapeCallback, removeShapeCallback) ->
 		@addShape = addShapeCallback.bind null
 		@removeShape = removeShapeCallback.bind null
@@ -55,7 +63,7 @@ class Rocket extends Shape
 	scale: 5.0
 	style: 'green'
 	max_velocity: 300
-	acceleration: 400
+	acceleration: 200
 	steering: Math.PI * 2
 	shoot_timeout: 400
 	constructor: () ->
