@@ -16,6 +16,7 @@ class Shape
 	constructor: () ->
 		@vertices = (vertice.scaled @scale for vertice in @vertices)
 		@drawer = asteroids.view.Drawer @vertices, @style
+	bind: () ->
 	draw: (ctx) ->
 		@drawer ctx, @model
 	move: (timediff) ->
@@ -30,6 +31,27 @@ class Rocket extends Shape
 	constructor: () ->
 		@model = new asteroids.model.Shape 250, 250, 0, 0, Math.PI / 4
 		super()
+		@keyboard = new asteroids.keyboard.Keyboard()
+		@keyboard.addListener @keyboard.keycodes.UP, @onAccelerate.bind this
+		@keyboard.addListener @keyboard.keycodes.DOWN, @onBrake.bind this
+		@keyboard.addListener @keyboard.keycodes.LEFT, @onLeft.bind this
+		@keyboard.addListener @keyboard.keycodes.RIGHT, @onRight.bind this
+		@keyboard.addListener @keyboard.keycodes.FIRE, @onFire.bind this
+	bind: () ->
+		@keyboard.bind()
+	onAccelerate: (time) ->
+		console.log 'up'
+	onBrake: (time) ->
+		console.log 'down'
+	onLeft: (time) ->
+		console.log 'left'
+	onRight: (time) ->
+		console.log 'right'
+	onFire: (time) ->
+		console.log 'fire'
+	move: (timediff) ->
+		@keyboard.runListeners timediff
+		super timediff
 
 rand = (from, to) ->
 	Math.random() * (to - from) + from
