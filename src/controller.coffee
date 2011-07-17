@@ -16,7 +16,6 @@ class Shape
 	constructor: () ->
 		@vertices = (vertice.scaled @scale for vertice in @vertices)
 		@drawer = asteroids.view.Drawer @vertices, @style
-	bind: () ->
 	draw: (ctx) ->
 		@drawer ctx, @model
 	move: (timediff) ->
@@ -31,13 +30,13 @@ class Rocket extends Shape
 	constructor: () ->
 		@model = new asteroids.model.Shape 250, 250, 0, 0, Math.PI / 4
 		super()
-		@keyboard = new asteroids.keyboard.Keyboard()
-		@keyboard.addListener @keyboard.keycodes.UP, @onAccelerate.bind this
-		@keyboard.addListener @keyboard.keycodes.DOWN, @onBrake.bind this
-		@keyboard.addListener @keyboard.keycodes.LEFT, @onLeft.bind this
-		@keyboard.addListener @keyboard.keycodes.RIGHT, @onRight.bind this
-		@keyboard.addListener @keyboard.keycodes.FIRE, @onFire.bind this
-	bind: () ->
+		Keyboard = asteroids.keyboard.Keyboard
+		@keyboard = new Keyboard()
+		@keyboard.addListener Keyboard.UP, @onAccelerate.bind this
+		@keyboard.addListener Keyboard.DOWN, @onBrake.bind this
+		@keyboard.addListener Keyboard.LEFT, @onLeft.bind this
+		@keyboard.addListener Keyboard.RIGHT, @onRight.bind this
+		@keyboard.addListener Keyboard.FIRE, @onFire.bind this
 		@keyboard.bind()
 	onAccelerate: (time) ->
 		console.log 'up'

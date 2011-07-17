@@ -5,45 +5,46 @@ asteroids.keyboard = {} if not asteroids.keyboard
 keycodeListener = (value) ->
 	(e) ->
 		keycode = e.keyCode
-		if @keycodes.hasOwnProperty keycode
-			@status[keycode] = value
+		keyname = INVERSE_KEYCODES[keycode]
+		if keyname
+			@status[keyname] = value
 			e.preventDefault()
-			e.stopPropation()
+			e.stopPropagation()
 		undefined
 
 class Keyboard
 	constructor: () ->
-		@keycodes = Keyboard.keycodes
-		@inverseKeycodes = Keyboard.inverseKeycodes
+		# key_name -> [listener1, listener2, ...]
 		@listeners = {}
+		# key_name -> boolean
 		@status = {}
 	bind: () ->
 		window.addEventListener 'keydown', @onKeyDown.bind(this), true
-	addListener: (keycode, listener) ->
-		throw new Error "Unrecognized keycode #{keycode}" if not @inverseKeycodes.hasOwnProperty keycode
-		@listeners[keycode] = [] if not @listeners[keycode]
-		@listeners[keycode].push listener
+		window.addEventListener 'keyup', @onKeyUp.bind(this), true
+	addListener: (keyname, listener) ->
+		throw new Error "Unrecognized key name #{keyname}" if not KEYCODES.hasOwnProperty keyname
+		@listeners[keyname] = [] if not @listeners[keyname]
+		@listeners[keyname].push listener
 	onKeyDown: keycodeListener true
 	onKeyUp: keycodeListener false
-	runKeyListeners: (keycode, args) ->
-		if @listeners[keycode]
-			listener.apply null, args for listener in @listeners[keycode]
+	runKeyListeners: (keyname, args) ->
+		if @listeners[keyname]
+			listener.apply null, args for listener in @listeners[keyname]
 		undefined
 	runListeners: (args...) ->
-		for own name, keycode of @keycodes
-			@runKeyListeners keycode, args if @status[keycode]
+		for own keyname of KEYCODES
+			@runKeyListeners keyname, args if @status[keyname]
 		undefined
-Keyboard.keycodes =
+
+KEYCODES =
 	UP: 38
 	DOWN: 40
 	LEFT: 37
-	RIGTH: 39
+	RIGHT: 39
 	FIRE: 32
-inverse = (o) ->
-    r = {}
-	for own k, v of o
-		r[v] = k
-	r
-Keyboard.inverseKeycodes = inverse(keycodes)
+INVERSE_KEYCODES = {}
+INVERSE_KEYCODES[v] = k for own k, v of KEYCODES
+
+Keyboard[name] = name for own name of KEYCODES
 
 asteroids.keyboard.Keyboard = Keyboard
