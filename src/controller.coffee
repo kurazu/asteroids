@@ -76,9 +76,10 @@ randVertices = (number) ->
 
 class Asteroid extends Shape
 	style: 'red'
-	max_velocity: 50,
+	min_velocity: 10
+	max_velocity: 50
 	constructor: () ->
-		@model = new asteroids.model.Shape rand(0, 500), rand(0, 500), rand(0.1, @max_velocity), rand(0.1, @max_velocity), rand(Math.PI / 8, Math.PI) * (if rand(0, 1) >= 0.5 then  1 else -1)
+		@model = new asteroids.model.Shape rand(0, 500), rand(0, 500), rand(0, Math.PI * 2), rand(@min_velocity, @max_velocity), rand(Math.PI / 8, Math.PI) * (if rand(0, 1) >= 0.5 then  1 else -1)
 		@scale = rand 10, 20
 		@vertices = randVertices 8
 		super()
