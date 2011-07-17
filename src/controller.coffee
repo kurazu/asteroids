@@ -12,6 +12,11 @@ ROCKET_VERTICES = [
 	V -2, -2
 ]
 
+with_scale = (func) ->
+	(timediff) ->
+		scale = timediff / 1000
+		func.call this, scale
+
 class Shape
 	constructor: () ->
 		@vertices = (vertice.scaled @scale for vertice in @vertices)
@@ -27,8 +32,12 @@ class Rocket extends Shape
 	vertices: ROCKET_VERTICES
 	scale: 5.0
 	style: 'green'
+	max_velocity: 200
+	acceleration: 40
+	deceleration: 60
+	steering: Math.PI * 2
 	constructor: () ->
-		@model = new asteroids.model.Shape 250, 250, 0, 0, Math.PI / 4
+		@model = new asteroids.model.Shape 250, 250, 0, 0, 0
 		super()
 		Keyboard = asteroids.keyboard.Keyboard
 		@keyboard = new Keyboard()
@@ -38,14 +47,16 @@ class Rocket extends Shape
 		@keyboard.addListener Keyboard.RIGHT, @onRight.bind this
 		@keyboard.addListener Keyboard.FIRE, @onFire.bind this
 		@keyboard.bind()
-	onAccelerate: (time) ->
-		console.log 'up'
-	onBrake: (time) ->
-		console.log 'down'
-	onLeft: (time) ->
-		console.log 'left'
-	onRight: (time) ->
-		console.log 'right'
+	onAccelerate: with_scale (scale) ->
+		@model.velocity += @acceleration * scale
+		@model.velocity = @max_velocity if @model.velocity > @max_velocity
+	onBrake: with_scale (scale) ->
+		@model.velocity += @deceleration * scale
+		@model.velocity = 0 if @model.velocity < 0
+	onLeft: with_scale (scale) ->
+		@model.angle += @steering * scale
+	onRight: with_scale (scale) ->
+		@model.angle -= @steering * scale
 	onFire: (time) ->
 		console.log 'fire'
 	move: (timediff) ->
