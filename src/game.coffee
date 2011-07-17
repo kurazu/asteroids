@@ -41,14 +41,14 @@ class Game
 			@fixPostion shape
 	fixPostion: (shape) ->
 		pos = shape.model.position
-		if pos.x < 0
-			pos.x = 500
-		else if pos.x > 500
-			pos.x = 0
-		if pos.y < 0
-			pos.y = 500
-		else if pos.y > 500
-			pos.y = 0
+		if pos.x < -Game.FIX_POSITION_MARGIN
+			pos.x = 500 + Game.FIX_POSITION_MARGIN
+		else if pos.x > 500 + Game.FIX_POSITION_MARGIN
+			pos.x = -Game.FIX_POSITION_MARGIN
+		if pos.y < -Game.FIX_POSITION_MARGIN
+			pos.y = 500 + Game.FIX_POSITION_MARGIN
+		else if pos.y > 500 + Game.FIX_POSITION_MARGIN
+			pos.y = Game.FIX_POSITION_MARGIN
 	onFrame: () ->
 		time = getTime()
 		timediff = time - @prevtime
@@ -61,5 +61,6 @@ class Game
 		@prevtime = time
 		@view.draw @shapes
 		@requestFrame()
+Game.FIX_POSITION_MARGIN = 20
 		
 asteroids.controller.Game = Game
