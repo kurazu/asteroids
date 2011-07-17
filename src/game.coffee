@@ -36,7 +36,19 @@ class Game
 		@shapes.push new asteroids.controller.Rocket()
 		@shapes.push new asteroids.controller.Asteroid() for i in [0..5]
 	move: (timediff) ->
-		shape.move timediff for shape in @shapes
+		for shape in @shapes
+			shape.move timediff
+			@fixPostion shape
+	fixPostion: (shape) ->
+		pos = shape.model.position
+		if pos.x < 0
+			pos.x = 500
+		else if pos.x > 500
+			pos.x = 0
+		if pos.y < 0
+			pos.y = 500
+		else if pos.y > 500
+			pos.y = 0
 	onFrame: () ->
 		time = getTime()
 		timediff = time - @prevtime
