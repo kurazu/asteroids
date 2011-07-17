@@ -12,6 +12,14 @@ ROCKET_VERTICES = [
 	V -2, -2
 ]
 
+BULLET_VERTICES = [
+	V -2, -2
+	V 1, -2
+	V 3, 0
+	V 1, 2
+	V -2, 2
+]
+
 with_scale = (func) ->
 	(timediff) ->
 		scale = timediff / 1000
@@ -21,6 +29,9 @@ class Shape
 	constructor: () ->
 		@vertices = (vertice.scaled @scale for vertice in @vertices)
 		@drawer = asteroids.view.Drawer @vertices, @style
+	bind: (addShapeCallback, removeShapeCallback) ->
+		@addShape = addShapeCallback.bind null
+		@removeShape = removeShapeCallback.bind null
 	draw: (ctx) ->
 		@drawer ctx, @model
 	move: (timediff) ->
@@ -28,14 +39,24 @@ class Shape
 		@model.rotationAngle += scale * @model.rotation
 		@model.position.add vector2d.Vector.identity().scale(scale * @model.velocity).rotate(@model.angle)
 
+class Bullet extends Shape
+	vertices: BULLET_VERTICES
+	scale: 1.0
+	style: 'blue'
+	velocity: 400
+	constructor: (x, y, angle) ->
+		@model = new asteroids.model.Shape x, y, angle, @velocity, 0
+		super()
+
 class Rocket extends Shape
 	vertices: ROCKET_VERTICES
 	scale: 5.0
 	style: 'green'
-	max_velocity: 500
+	max_velocity: 300
 	acceleration: 400
 	deceleration: 600
 	steering: Math.PI * 3
+	shoot_timeout: 400
 	constructor: () ->
 		@model = new asteroids.model.Shape 250, 250, 0, 0, 0
 		super()
@@ -47,6 +68,7 @@ class Rocket extends Shape
 		@keyboard.addListener Keyboard.RIGHT, @onRight.bind this
 		@keyboard.addListener Keyboard.FIRE, @onFire.bind this
 		@keyboard.bind()
+		@can_shoot = true
 	onAccelerate: with_scale (scale) ->
 		@model.velocity += @acceleration * scale
 		@model.velocity = @max_velocity if @model.velocity > @max_velocity
@@ -58,7 +80,14 @@ class Rocket extends Shape
 	onRight: with_scale (scale) ->
 		@model.angle -= @steering * scale
 	onFire: (time) ->
-		console.log 'fire'
+		if @can_shoot
+			position = @model.position.added vector2d.Vector.identity().scale(15.0).rotate(@model.angle) # draw before the rocket
+			bullet = new Bullet position.x, position.y, @model.angle
+			@addShape bullet
+			@can_shoot = false
+			setTimeout () =>
+				@can_shoot = true
+			, @shoot_timeout
 	move: (timediff) ->
 		@keyboard.runListeners timediff
 		super timediff
@@ -86,3 +115,4 @@ class Asteroid extends Shape
 
 asteroids.controller.Rocket = Rocket
 asteroids.controller.Asteroid = Asteroid
+asteroids.controller.Bullet = Bullet
