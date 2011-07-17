@@ -20,24 +20,32 @@ class Space
 Space.DEFAULT_WIDTH = 500
 Space.DEFAULT_HEIGHT = 500
 
-Drawer = (vertices, strokeStyle='white') ->
+Drawer = (vertices, strokeStyle='white', after=1) ->
+	previous = []
 	(ctx, model) ->
-		position = model.position
-		angle = model.getViewAngle()
-		ctx.save()
-		ctx.translate position.x, 500 - position.y
-		ctx.rotate -angle
-		ctx.beginPath()
-		ctx.strokeStyle = strokeStyle
-		i = 0
-		for vertice in vertices
-			if not i++
-				ctx.moveTo vertice.x, -vertice.y
-			else
-				ctx.lineTo vertice.x, -vertice.y
-		ctx.closePath()
-		ctx.stroke()
-		ctx.restore()
+		previous.push
+			x: model.position.x
+			y: model.position.y
+			angle: model.getViewAngle()
+		previous.shift() if previous.length > after
+		j = 0
+		for pos in previous
+			ctx.save()
+			ctx.translate pos.x, 500 - pos.y
+			ctx.rotate -pos.angle
+			ctx.beginPath()
+			ctx.strokeStyle = strokeStyle
+			ctx.globalAlpha = (j + 1) / after
+			i = 0
+			for vertice in vertices
+				if not i++
+					ctx.moveTo vertice.x, -vertice.y
+				else
+					ctx.lineTo vertice.x, -vertice.y
+			ctx.closePath()
+			ctx.stroke()
+			ctx.restore()
+			j++
 
 asteroids.view.Space = Space
 asteroids.view.Drawer = Drawer

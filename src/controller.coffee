@@ -26,9 +26,10 @@ with_scale = (func) ->
 		func.call this, scale
 
 class Shape
+	visual_trails: 1
 	constructor: () ->
 		@vertices = (vertice.scaled @scale for vertice in @vertices)
-		@drawer = asteroids.view.Drawer @vertices, @style
+		@drawer = asteroids.view.Drawer @vertices, @style, @visual_trails
 	bind: (addShapeCallback, removeShapeCallback) ->
 		@addShape = addShapeCallback.bind null
 		@removeShape = removeShapeCallback.bind null
@@ -49,6 +50,7 @@ class Bullet extends Shape
 		super()
 
 class Rocket extends Shape
+	visual_trails: 10
 	vertices: ROCKET_VERTICES
 	scale: 5.0
 	style: 'green'
@@ -104,6 +106,7 @@ randVertices = (number) ->
 	result
 
 class Asteroid extends Shape
+	visual_trails: 7
 	style: 'red'
 	min_velocity: 10
 	max_velocity: 50
