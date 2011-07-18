@@ -55,9 +55,9 @@ class Game
 			shape.move timediff
 			@fixPosition shape
 		# collision detection
-		for i in [0...@shapes.length]
+		for i in [0 ... @shapes.length]
 			shape1 = @shapes[i]
-			for j in [i...@shapes.length]
+			for j in [i + 1 ... @shapes.length]
 				shape2 = @shapes[j]
 				if shape1.model.position.distance(shape2.model.position) < shape1.model.bb_radius + shape2.model.bb_radius
 					@onCollision shape1, shape2
