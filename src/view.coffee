@@ -35,18 +35,17 @@ class Space
 		shape.draw @ctx for shape in shapes
 		for shape in shapes
 			@ctx.save()
-			@ctx.strokeStyle = 'yellow'
 			vertices = shape.getPhysicalVertices()
 			first = true
-			@ctx.beginPath()
-			for vertex in vertices
-				if first
-					@ctx.moveTo vertex.x, 500 - vertex.y
-					first = false
-				else
-					@ctx.lineTo vertex.x, 500 - vertex.y
-			@ctx.closePath()
-			@ctx.stroke()
+			for i in [0...vertices.length - 1]
+				sat = (i + 1) / vertices.length * 255
+				@ctx.strokeStyle = "rgb(#{sat.toFixed()},#{sat.toFixed()}, #{(255 - sat).toFixed()})"
+				@ctx.beginPath()
+				@ctx.moveTo shape.model.position.x, 500 - shape.model.position.y
+				@ctx.lineTo vertices[i].x, 500 - vertices[i].y
+				@ctx.lineTo vertices[i + 1].x, 500 - vertices[i + 1].y
+				@ctx.closePath()
+				@ctx.stroke()
 			@ctx.restore()
 Space.DEFAULT_WIDTH = 500
 Space.DEFAULT_HEIGHT = 500
