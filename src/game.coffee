@@ -14,6 +14,29 @@ is_asteroid = (shape) ->
 is_rocket = (shape) ->
 	shape instanceof asteroids.controller.Rocket
 
+# check if point is inside a triangle
+vertexInTriangle = (vertex, triangle) ->
+	false
+
+trianglesFrom = (vertices, center) ->
+	[]
+
+# due to way asteroids are constructed, all shapes
+# can be split into triangles [vertex n, vertex n + 1, center]
+detectDetailedCollision = (shape1, shape2) ->
+	center1 = shape1.position
+	#center2 = shape2.position
+	# materialize actual position for each vertice
+	vertices1 = shape1.getPhysicalVertices()
+	vertices2 = shape2.getPhysicalVertices()
+
+	triangles = trianglesFrom vertices1, center1
+	for triangle in triangles
+		for vertex in vertices2
+			if vertexInTriangle vertex, triangle
+				return true
+	false
+
 class Game
 	constructor: () ->
 		@view = new asteroids.view.Space()
@@ -59,7 +82,7 @@ class Game
 			shape1 = @shapes[i]
 			for j in [i + 1 ... @shapes.length]
 				shape2 = @shapes[j]
-				if shape1.model.position.distance(shape2.model.position) < shape1.model.bb_radius + shape2.model.bb_radius
+				if (shape1.model.position.distance(shape2.model.position) < shape1.model.bb_radius + shape2.model.bb_radius) and (detectDetailedCollision shape1, shape2)
 					@onCollision shape1, shape2
 		@shapes = (shape for shape in @shapes when not shape.delete)
 	onCollision: (shape1, shape2) ->

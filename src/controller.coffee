@@ -47,6 +47,8 @@ class Shape
 		scale = timediff / 1000
 		@model.rotationAngle += scale * @model.rotation
 		@model.position.add @model.velocity_vector.scaled scale
+	getPhysicalVertices: () ->
+		(@model.position.added vertex.rotated(@model.getViewAngle()) for vertex in @vertices)
 
 class Bullet extends Shape
 	vertices: BULLET_VERTICES
