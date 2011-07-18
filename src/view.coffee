@@ -33,6 +33,21 @@ class Space
 		@ctx.fill()
 		@ctx.restore()
 		shape.draw @ctx for shape in shapes
+		for shape in shapes
+			@ctx.save()
+			@ctx.strokeStyle = 'yellow'
+			vertices = shape.getPhysicalVertices()
+			first = true
+			@ctx.beginPath()
+			for vertex in vertices
+				if first
+					@ctx.moveTo vertex.x, 500 - vertex.y
+					first = false
+				else
+					@ctx.lineTo vertex.x, 500 - vertex.y
+			@ctx.closePath()
+			@ctx.stroke()
+			@ctx.restore()
 Space.DEFAULT_WIDTH = 500
 Space.DEFAULT_HEIGHT = 500
 

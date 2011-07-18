@@ -14,17 +14,13 @@ is_asteroid = (shape) ->
 is_rocket = (shape) ->
 	shape instanceof asteroids.controller.Rocket
 
-# check if point is inside a triangle
-vertexInTriangle = (vertex, triangle) ->
-	false
-
 trianglesFrom = (vertices, center) ->
-	[]
+	(new vector2d.Triangle vertices[i], vertices[i + 1], center for i in [0...vertices.length - 1])
 
 # due to way asteroids are constructed, all shapes
 # can be split into triangles [vertex n, vertex n + 1, center]
 detectDetailedCollision = (shape1, shape2) ->
-	center1 = shape1.position
+	center1 = shape1.model.position
 	#center2 = shape2.position
 	# materialize actual position for each vertice
 	vertices1 = shape1.getPhysicalVertices()
@@ -33,9 +29,21 @@ detectDetailedCollision = (shape1, shape2) ->
 	triangles = trianglesFrom vertices1, center1
 	for triangle in triangles
 		for vertex in vertices2
-			if vertexInTriangle vertex, triangle
+			if triangle.hasPoint vertex
 				return true
 	false
+
+collidableTypes = (shape1, shape2) ->
+	if is_rocket(shape1) and is_asteroid(shape2)
+		true
+	else if is_asteroid(shape1) and is_rocket(shape2)
+		true
+	else if is_asteroid(shape1) and is_bullet(shape2)
+		true
+	else if is_bullet(shape1) and is_asteroid(shape2)
+		true
+	else
+		false
 
 class Game
 	constructor: () ->
@@ -82,7 +90,8 @@ class Game
 			shape1 = @shapes[i]
 			for j in [i + 1 ... @shapes.length]
 				shape2 = @shapes[j]
-				if (shape1.model.position.distance(shape2.model.position) < shape1.model.bb_radius + shape2.model.bb_radius) and (detectDetailedCollision shape1, shape2)
+				#TODO: only check for promising type
+				if (collidableTypes shape1, shape2) and (shape1.model.position.distance(shape2.model.position) < shape1.model.bb_radius + shape2.model.bb_radius) and (detectDetailedCollision shape1, shape2)
 					@onCollision shape1, shape2
 		@shapes = (shape for shape in @shapes when not shape.delete)
 	onCollision: (shape1, shape2) ->
