@@ -2,9 +2,14 @@
 asteroids = @asteroids
 asteroids.view = {} if not asteroids.view
 
+getTime = () -> +new Date
+                      
 class Space
 	constructor: () ->
 	init: () ->
+		@fps = 0
+		@frames = 0
+		@prev_time = getTime()
 		canvas = document.createElement 'canvas'
 		canvas.width = Space.DEFAULT_WIDTH
 		canvas.height = Space.DEFAULT_WIDTH
@@ -12,9 +17,20 @@ class Space
 		@canvas = canvas
 		@ctx = canvas.getContext('2d')
 	draw: (shapes) ->
+		time = getTime()
+		if time - @prev_time > 1000
+			@fps = (time - @prev_time) / @frames
+			@prev_time = time
+			@frames = 0
+		@frames++
 		@ctx.save()
 		@ctx.fillStyle = 'black'
 		@ctx.fillRect 0, 0, Space.DEFAULT_WIDTH, Space.DEFAULT_HEIGHT
+		@ctx.beginPath()
+		@ctx.fillStyle = 'white'
+		@ctx.font = 'bold 12px Verdana'
+		@ctx.fillText "#{@fps.toFixed(1)} FPS", 2, 10
+		@ctx.fill()
 		@ctx.restore()
 		shape.draw @ctx for shape in shapes
 Space.DEFAULT_WIDTH = 500

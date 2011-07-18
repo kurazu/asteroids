@@ -17,8 +17,7 @@ is_rocket = (shape) ->
 class Game
 	constructor: () ->
 		@view = new asteroids.view.Space()
-		@frames = 0
-		@prevtime = @time = getTime()
+		@prevtime = getTime()
 		@shapes = []
 		@end = false
 	run: () ->
@@ -89,15 +88,12 @@ class Game
 	onFrame: () ->
 		time = getTime()
 		timediff = time - @prevtime
-		@frames++
-		if time - @time > 1000
-			#console.log "FPS #{@frames}"
-			@time = time
-			@frames = 0
+		timediff = Game.MAX_TIME_DIFF if timediff > Game.MAX_TIME_DIFF
 		@move timediff
 		@prevtime = time
 		@view.draw @shapes
 		@requestFrame() if not @end
 Game.FIX_POSITION_MARGIN = 20
+Game.MAX_TIME_DIFF = 32 # min 30 FPS
 		
 asteroids.controller.Game = Game
