@@ -111,13 +111,25 @@ randVertices = (number) ->
 
 	result
 
+# put asteroids at screen edges in the beginning
+randAsteroidPosition = () ->
+	edge = ~~rand(0, 4)
+	position = rand(0, 500)
+	switch edge
+		when 0 then [0, position]
+		when 1 then [500, position]
+		when 2 then [position, 0]
+		when 3 then [position, 500]
+		else [0, 0]
+
 class Asteroid extends Shape
 	visual_trails: 7
 	style: 'red'
 	min_velocity: 10
 	max_velocity: 50
 	constructor: () ->
-		@model = new asteroids.model.Shape rand(0, 500), rand(0, 500), rand(0, Math.PI * 2), rand(@min_velocity, @max_velocity), rand(Math.PI / 8, Math.PI) * (if rand(0, 1) >= 0.5 then  1 else -1)
+		[x, y] = randAsteroidPosition()
+		@model = new asteroids.model.Shape x, y, rand(0, Math.PI * 2), rand(@min_velocity, @max_velocity), rand(Math.PI / 8, Math.PI) * (if rand(0, 1) >= 0.5 then  1 else -1)
 		@scale = rand 10, 20
 		@vertices = randVertices 8
 		super()
