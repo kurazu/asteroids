@@ -33,7 +33,7 @@ class Vector
 		this
 	rotated: (angle) ->
 		sin = Math.sin angle, cos = Math.cos angle
-		new Vector cos * @x - sin & @y, sin * @x + cos * @y
+		new Vector cos * @x - sin * @y, sin * @x + cos * @y
 	distance: (other) ->
 		dx = other.x - @x
 		dy = other.y - @y

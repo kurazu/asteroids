@@ -2,8 +2,7 @@
 asteroids = @asteroids
 asteroids.controller = {} if not asteroids.controller
 
-getTime = () ->
-	new Date().getTime()
+getTime = () ->	+new Date
               
 is_bullet = (shape) ->
 	shape instanceof asteroids.controller.Bullet
