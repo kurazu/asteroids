@@ -19,7 +19,7 @@ class Space
 	draw: (shapes) ->
 		time = getTime()
 		if time - @prev_time > 1000
-			@fps = (time - @prev_time) / @frames
+			@fps = @frames
 			@prev_time = time
 			@frames = 0
 		@frames++
@@ -29,7 +29,7 @@ class Space
 		@ctx.beginPath()
 		@ctx.fillStyle = 'white'
 		@ctx.font = 'bold 12px Verdana'
-		@ctx.fillText "#{@fps.toFixed(1)} FPS", 2, 10
+		@ctx.fillText "#{@fps} FPS", 2, 10
 		@ctx.fill()
 		@ctx.restore()
 		shape.draw @ctx for shape in shapes

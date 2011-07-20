@@ -146,18 +146,20 @@ class Asteroid extends Shape
 		@generation = parent.generation + 1
 		@model = Object.create parent.model
 		@model.position = Object.create parent.model.position
+		@model.rotation = rand(Math.PI / 8, Math.PI) * (if rand(0, 1) >= 0.5 then  1 else -1) 
 		@model.velocity_vector = Object.create parent.model.velocity_vector
-		@scale = parent.scale * 2
-		@vertices = Object.create parent.vertices
+		@scale = 0.75
+		@vertices = parent.vertices
     
 	# split into smaller asteroids
 	split: () ->
-		if @generation >= @max_generation
+		if @generation > @max_generation
 			return # no more splitting
 		for i in [0...@generation]
 			split = new Asteroid this
-			split.model.velocity_vector.rotate (i + 1) / @generation * Math.PI * 2
+			split.model.velocity_vector.rotate (i + 1) / @generation * Math.PI * 2 + Math.PI / 2
 			@addShape split
+		undefined
 
 asteroids.controller.Rocket = Rocket
 asteroids.controller.Asteroid = Asteroid
