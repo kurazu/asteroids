@@ -78,8 +78,11 @@ class Game
 		undefined
 	addShape: (shape) ->
 		@shapes.push shape
+		shape.bind @addShape.bind(this), @removeShape.bind(this)
+		console.log "add #{@shapes.length} shapes"
 	removeShape: (shape) ->
 		@shapes = (s for s in @shapes when shape != s)
+		console.log "rem #{@shapes.length} shapes"
 	move: (timediff) ->
 		for shape in @shapes
 			shape.move timediff
@@ -94,7 +97,13 @@ class Game
 					@onCollision shape1, shape2
 		@shapes = (shape for shape in @shapes when not shape.delete)
 	onCollision: (shape1, shape2) ->
-		if (is_bullet(shape1) and is_asteroid(shape2)) or (is_asteroid(shape1) and is_bullet(shape2))
+		if (is_bullet(shape1) and is_asteroid(shape2))
+			shape2.split()
+			shape1.delete = true
+			shape2.delete = true
+			return
+		if (is_asteroid(shape1) and is_bullet(shape2))
+			shape1.split()
 			shape1.delete = true
 			shape2.delete = true
 			return

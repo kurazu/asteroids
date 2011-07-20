@@ -129,12 +129,35 @@ class Asteroid extends Shape
 	style: 'red'
 	min_velocity: 10
 	max_velocity: 50
-	constructor: () ->
+	max_generation: 4
+	constructor: (parent=null) ->
+		if not parent
+			@init()
+		else
+			@initFrom parent
+		super()
+	init: () ->
+		@generation = 2
 		[x, y] = randAsteroidPosition()
 		@model = new asteroids.model.Shape x, y, rand(0, Math.PI * 2), rand(@min_velocity, @max_velocity), rand(Math.PI / 8, Math.PI) * (if rand(0, 1) >= 0.5 then  1 else -1)
 		@scale = rand 10, 20
 		@vertices = randVertices 8
-		super()
+	initFrom: (parent) ->
+		@generation = parent.generation + 1
+		@model = Object.create parent.model
+		@model.position = Object.create parent.model.position
+		@model.velocity_vector = Object.create parent.model.velocity_vector
+		@scale = parent.scale * 2
+		@vertices = Object.create parent.vertices
+    
+	# split into smaller asteroids
+	split: () ->
+		if @generation >= @max_generation
+			return # no more splitting
+		for i in [0...@generation]
+			split = new Asteroid this
+			split.model.velocity_vector.rotate (i + 1) / @generation * Math.PI * 2
+			@addShape split
 
 asteroids.controller.Rocket = Rocket
 asteroids.controller.Asteroid = Asteroid
